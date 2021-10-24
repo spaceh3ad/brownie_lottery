@@ -8,6 +8,7 @@ from brownie import (
     Contract,
     interface,
 )
+from web3 import Web3
 
 FORKED_LOCAL_ENVIROMENTS = ["mainnet-fork", "mainnet-fork-dev"]
 LOCAL_BLOCKCHAIN_ENVIROMENTS = ["development", "ganache-local"]
@@ -23,7 +24,6 @@ def get_account(index=None, id=None):
         or network.show_active() in FORKED_LOCAL_ENVIROMENTS
     ):
         return accounts[0]
-
     return accounts.add(config["wallets"]["from_key"])
 
 
@@ -35,7 +35,7 @@ contract_to_mock = {
 
 
 def get_contract(contract_name):
-    """this function ll grab contract addresses from brownie config if defined,
+    """this function will grab contract addresses from brownie config if defined,
     otherwise it will deploy a mock contract and return mock contract
 
         Args:
@@ -53,7 +53,7 @@ def get_contract(contract_name):
         contract = contract_type[-1]
 
     else:
-        contract_address = config["networks"][network.show_actice()][contract_name]
+        contract_address = config["networks"][network.show_active()][contract_name]
         contract = Contract.from_abi(
             contract_type._name, contract_address, contract_type.abi
         )
@@ -75,8 +75,10 @@ def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_VALUE):
 def fund_with_link(
     contract_address, account=None, link_token=None, amount=100000000000000000
 ):
+    assert amount == Web3.toWei(0.1, "ether"), "Not sending 0.1 TOKEN"
     account = account if account else get_account()
     link_token = link_token if link_token else get_contract("link_token")
+    assert account.balance() != 0, "Insufficient account balance"
     tx = link_token.transfer(contract_address, amount, {"from": account})
     # link_token_contract = interface.LinkTokenInterface(link_token.address)
     # tx = link_token_contract.transfer(contract_address, amount, {"from": account})

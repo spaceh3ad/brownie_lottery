@@ -1,4 +1,3 @@
-from _pytest.compat import STRING_TYPES
 from brownie import accounts, config, network, exceptions
 from scripts.deploy_lottery import deploy_lottery
 from scripts.helpful_scripts import (
@@ -40,7 +39,7 @@ def test_can_start_and_enter_lottery():
     # Act
     lottery.enter({"from": account, "value": lottery.getEntranceFee()})
     # assert
-    assert lottery.playres(0) == account
+    assert lottery.players(0) == account
 
 
 def test_can_end_lottery():

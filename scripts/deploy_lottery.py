@@ -43,7 +43,7 @@ def end_lottery():
     ending_tx = lottery.endLottery({"from": account})
     ending_tx.wait(1)
     time.sleep(60)
-    print(f"{lottery.recentWinner()} is the winner!")
+    print(f"{lottery.recentWinner} is the winner!")
     # fund contract with LINK
 
 
